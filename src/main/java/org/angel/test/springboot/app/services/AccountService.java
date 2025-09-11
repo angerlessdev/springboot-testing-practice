@@ -8,5 +8,5 @@ public interface AccountService {
     Account findAccountById(Long id);
     int checkTotalTransfers(Long bankId);
     BigDecimal checkBalance(Long accountId);
-    void transfer(Long sourceAccountNumber, Long destinationAccountNumber, BigDecimal amount);
+    void transfer(Long sourceAccountNumber, Long destinationAccountNumber, BigDecimal amount, Long bankId);
 }
