@@ -1,8 +1,15 @@
 package org.angel.test.springboot.app.models;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="Banks")
 public class Bank {
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(name="total_transfers")
     private Integer totalTransfers;
 
     public Bank() {
