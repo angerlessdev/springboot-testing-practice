@@ -4,9 +4,10 @@ import org.angel.test.springboot.app.models.Account;
 import org.angel.test.springboot.app.models.Bank;
 import org.angel.test.springboot.app.repositories.AccountRepository;
 import org.angel.test.springboot.app.repositories.BankRepository;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-
+@Service
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final BankRepository bankRepository;

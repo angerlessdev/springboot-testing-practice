@@ -5,11 +5,13 @@ import org.angel.test.springboot.app.models.Account;
 import org.angel.test.springboot.app.models.Bank;
 import org.angel.test.springboot.app.repositories.AccountRepository;
 import org.angel.test.springboot.app.repositories.BankRepository;
+import org.angel.test.springboot.app.services.AccountService;
 import org.angel.test.springboot.app.services.AccountServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
 
@@ -18,12 +20,12 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class SpringbootTestApplicationTests {
-    @Mock
+    @MockitoBean
     AccountRepository accountRepository;
-    @Mock
+    @MockitoBean
     BankRepository bankRepository;
-    @InjectMocks
-    AccountServiceImpl accountService;
+    @Autowired
+    AccountService accountService;
     @Test
     void contextLoads() {
         when(accountRepository.findById(1L)).thenReturn(Data.createAccount001());
@@ -51,6 +53,9 @@ class SpringbootTestApplicationTests {
 
         verify(bankRepository, times(2)).findById(1L);
         verify(bankRepository).update(any(Bank.class));
+
+        verify(accountRepository, times(6)).findById(anyLong());
+        verify(accountRepository, never()).findAll();
     }
     @Test
     void contextLoads2() {
@@ -81,5 +86,23 @@ class SpringbootTestApplicationTests {
 
         verify(bankRepository, times(1)).findById(1L);
         verify(bankRepository, never()).update(any(Bank.class));
+
+        verify(accountRepository, times(5)).findById(anyLong());
+        verify(accountRepository, never()).findAll();
+    }
+
+    @Test
+    void contextLoads3() {
+        when(accountRepository.findById(1L)).thenReturn(Data.createAccount001());
+
+        Account account1 = accountService.findAccountById(1L);
+        Account account2 = accountService.findAccountById(1L);
+
+        assertSame(account1, account2);
+        assertEquals(account1.getPerson(), account2.getPerson());
+        assertEquals("Angel", account1.getPerson());
+        assertEquals("Angel", account2.getPerson());
+
+        verify(accountRepository, times(2)).findById(1L);
     }
 }
