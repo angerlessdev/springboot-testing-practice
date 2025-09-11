@@ -1,4 +1,4 @@
-﻿package org.angel.test.springboot.app;
+package org.angel.test.springboot.app;
 
 import org.angel.test.springboot.app.models.Account;
 import org.angel.test.springboot.app.models.Bank;

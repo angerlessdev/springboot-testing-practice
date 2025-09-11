@@ -1,4 +1,4 @@
-﻿package org.angel.test.springboot.app.repositories;
+package org.angel.test.springboot.app.repositories;
 
 import org.angel.test.springboot.app.models.Bank;
 
