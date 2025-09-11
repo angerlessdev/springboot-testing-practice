@@ -1,5 +1,6 @@
 package org.angel.test.springboot.app;
 
+import org.angel.test.springboot.app.exceptions.InsufficientFundsException;
 import org.angel.test.springboot.app.models.Account;
 import org.angel.test.springboot.app.models.Bank;
 import org.angel.test.springboot.app.repositories.AccountRepository;
@@ -23,12 +24,11 @@ class SpringbootTestApplicationTests {
     BankRepository bankRepository;
     @InjectMocks
     AccountServiceImpl accountService;
-
     @Test
     void contextLoads() {
-        when(accountRepository.findById(1L)).thenReturn(Data.ACCOUNT_001);
-        when(accountRepository.findById(2L)).thenReturn(Data.ACCOUNT_002);
-        when(bankRepository.findById(1L)).thenReturn(Data.BANK);
+        when(accountRepository.findById(1L)).thenReturn(Data.createAccount001());
+        when(accountRepository.findById(2L)).thenReturn(Data.createAccount002());
+        when(bankRepository.findById(1L)).thenReturn(Data.createBank());
 
         BigDecimal balanceSource = accountService.checkBalance(1L);
         BigDecimal balanceDestination = accountService.checkBalance(2L);
@@ -51,5 +51,35 @@ class SpringbootTestApplicationTests {
 
         verify(bankRepository, times(2)).findById(1L);
         verify(bankRepository).update(any(Bank.class));
+    }
+    @Test
+    void contextLoads2() {
+        when(accountRepository.findById(1L)).thenReturn(Data.createAccount001());
+        when(accountRepository.findById(2L)).thenReturn(Data.createAccount002());
+        when(bankRepository.findById(1L)).thenReturn(Data.createBank());
+
+        BigDecimal balanceSource = accountService.checkBalance(1L);
+        BigDecimal balanceDestination = accountService.checkBalance(2L);
+        assertEquals("1000", balanceSource.toPlainString());
+        assertEquals("2000", balanceDestination.toPlainString());
+
+        assertThrows(InsufficientFundsException.class, () -> {
+            accountService.transfer(1L, 2L, new BigDecimal("1200"), 1L);
+        });
+        balanceSource = accountService.checkBalance(1L);
+        balanceDestination = accountService.checkBalance(2L);
+
+        assertEquals("1000", balanceSource.toPlainString());
+        assertEquals("2000", balanceDestination.toPlainString());
+
+        int totalTransfer = accountService.checkTotalTransfers(1L);
+        assertEquals(0, totalTransfer);
+
+        verify(accountRepository, times(3)).findById(1L);
+        verify(accountRepository, times(2)).findById(2L);
+        verify(accountRepository, never()).update(any(Account.class));
+
+        verify(bankRepository, times(1)).findById(1L);
+        verify(bankRepository, never()).update(any(Bank.class));
     }
 }

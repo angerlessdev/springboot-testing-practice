@@ -1,5 +1,7 @@
 package org.angel.test.springboot.app.models;
 
+import org.angel.test.springboot.app.exceptions.InsufficientFundsException;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -20,7 +22,7 @@ public class Account {
     public void debit(BigDecimal amount) {
         BigDecimal newBalance = balance.subtract(amount);
         if (newBalance.compareTo(BigDecimal.ZERO) < 0)
-            throw new RuntimeException("Insufficient funds in the account");
+            throw new InsufficientFundsException("Insufficient funds in the account");
         this.balance = newBalance;
     }
     public void credit(BigDecimal amount) {
