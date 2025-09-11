@@ -1,6 +1,7 @@
 package org.angel.test.springboot.app;
 
 import org.angel.test.springboot.app.models.Account;
+import org.angel.test.springboot.app.models.Bank;
 import org.angel.test.springboot.app.repositories.AccountRepository;
 import org.angel.test.springboot.app.repositories.BankRepository;
 import org.angel.test.springboot.app.services.AccountServiceImpl;
@@ -34,14 +35,21 @@ class SpringbootTestApplicationTests {
         assertEquals("1000", balanceSource.toPlainString());
         assertEquals("2000", balanceDestination.toPlainString());
 
-        //Account account_001 = accountService.findAccountById(1L);
-        //assertEquals("Angel", account_001.getPerson());
         accountService.transfer(1L, 2L, new BigDecimal("100"), 1L);
         balanceSource = accountService.checkBalance(1L);
         balanceDestination = accountService.checkBalance(2L);
 
         assertEquals("900", balanceSource.toPlainString());
         assertEquals("2100", balanceDestination.toPlainString());
-    }
 
+        int totalTransfer = accountService.checkTotalTransfers(1L);
+        assertEquals(1, totalTransfer);
+
+        verify(accountRepository, times(3)).findById(1L);
+        verify(accountRepository, times(3)).findById(2L);
+        verify(accountRepository, times(2)).update(any(Account.class));
+
+        verify(bankRepository, times(2)).findById(1L);
+        verify(bankRepository).update(any(Bank.class));
+    }
 }
