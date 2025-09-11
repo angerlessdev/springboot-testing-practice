@@ -3,15 +3,15 @@
 public class Bank {
     private Long id;
     private String name;
-    private Integer totalTransactions;
+    private Integer totalTransfers;
 
     public Bank() {
     }
 
-    public Bank(Long id, String name, Integer totalTransactions) {
+    public Bank(Long id, String name, Integer totalTransfers) {
         this.id = id;
         this.name = name;
-        this.totalTransactions = totalTransactions;
+        this.totalTransfers = totalTransfers;
     }
 
     public Long getId() {
@@ -22,8 +22,8 @@ public class Bank {
         return name;
     }
 
-    public Integer getTotalTransactions() {
-        return totalTransactions;
+    public Integer getTotalTransfers() {
+        return totalTransfers;
     }
 
     public void setId(Long id) {
@@ -34,7 +34,7 @@ public class Bank {
         this.name = name;
     }
 
-    public void setTotalTransactions(Integer totalTransactions) {
-        this.totalTransactions = totalTransactions;
+    public void setTotalTransfers(Integer totalTransactions) {
+        this.totalTransfers = totalTransactions;
     }
 }
