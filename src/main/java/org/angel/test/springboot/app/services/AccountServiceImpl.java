@@ -5,6 +5,7 @@ import org.angel.test.springboot.app.models.Bank;
 import org.angel.test.springboot.app.repositories.AccountRepository;
 import org.angel.test.springboot.app.repositories.BankRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 @Service
@@ -18,21 +19,25 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Account findAccountById(Long id) {
         return accountRepository.findById(id).orElseThrow();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int checkTotalTransfers(Long bankId) {
         return bankRepository.findById(bankId).orElseThrow().getTotalTransfers();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal checkBalance(Long accountId) {
         return accountRepository.findById(accountId).orElseThrow().getBalance();
     }
 
     @Override
+    @Transactional
     public void transfer(Long sourceAccountNumber, Long destinationAccountNumber, BigDecimal amount, Long bankId) {
         Account sourceAccount = accountRepository.findById(sourceAccountNumber).orElseThrow();
         sourceAccount.debit(amount);
