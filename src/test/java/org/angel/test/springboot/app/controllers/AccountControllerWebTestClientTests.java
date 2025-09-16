@@ -14,12 +14,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -147,5 +146,41 @@ class AccountControllerWebTestClientTests {
                 })
                 .hasSize(2)
                 .value(hasSize(2));
+    }
+    @Test
+    @Order(6)
+    void testSaveAccount() {
+
+        Account account = new Account(null, "Antonio", new BigDecimal("3000"));
+        client.post().uri("/api/accounts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(account)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(3)
+                .jsonPath("$.person").isEqualTo("Antonio")
+                .jsonPath("$.person").value(is("Antonio"))
+                .jsonPath("$.balance").isEqualTo(3000);
+    }
+    @Test
+    @Order(7)
+    void testSaveAccount2() {
+        Account account = new Account(null, "Antonio", new BigDecimal("3000"));
+        client.post().uri("/api/accounts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(account)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Account.class)
+                .consumeWith(response -> {
+                    Account responseAccount = response.getResponseBody();
+                    assert responseAccount != null;
+                    assertEquals(4L, responseAccount.getId());
+                    assertEquals("Antonio", responseAccount.getPerson());
+                    assertEquals(new BigDecimal("3000"), responseAccount.getBalance());
+                });
     }
 }
