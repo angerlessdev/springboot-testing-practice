@@ -14,9 +14,12 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -106,5 +109,43 @@ class AccountControllerWebTestClientTests {
                 });
         //.jsonPath("$.person").isEqualTo("Angel")
         //.jsonPath("$.balance").isEqualTo(1000);
+    }
+    @Test
+    @Order(4)
+    void testFindAllAccounts() {
+        client.get().uri("/api/accounts").exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$[0].person").isEqualTo("Angel")
+                .jsonPath("$[0].id").isEqualTo(1)
+                .jsonPath("$[0].balance").isEqualTo(900)
+                .jsonPath("$[1].person").isEqualTo("Estrella")
+                .jsonPath("$[1].id").isEqualTo(2)
+                .jsonPath("$[1].balance").isEqualTo(2100)
+                .jsonPath("$").isArray()
+                .jsonPath("$").value(hasSize(2));
+    }
+    @Test
+    @Order(5)
+    void testFindAllAccounts2() {
+        client.get().uri("/api/accounts").exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Account.class)
+                .consumeWith(response -> {
+                    List<Account> accounts = response.getResponseBody();
+                    assert accounts != null;
+                    assertEquals(2, accounts.size());
+                    assertEquals("Angel", accounts.getFirst().getPerson());
+                    assertEquals("Estrella", accounts.get(1).getPerson());
+                    assertEquals(1, accounts.getFirst().getId());
+                    assertEquals(2, accounts.get(1).getId());
+                    assertEquals(900, accounts.getFirst().getBalance().intValue());
+                    assertEquals(2100, accounts.get(1).getBalance().intValue());
+                    assertFalse(accounts.isEmpty());
+                })
+                .hasSize(2)
+                .value(hasSize(2));
     }
 }
