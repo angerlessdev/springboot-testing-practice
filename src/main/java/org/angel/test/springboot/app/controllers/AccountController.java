@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
@@ -21,6 +22,18 @@ public class AccountController {
     @ResponseStatus(OK)
     public Account detail(@PathVariable(name="id") Long id) {
         return accountService.findAccountById(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(OK)
+    public List<Account> findAllAccounts() {
+        return accountService.findAll();
+    }
+
+    @PostMapping
+    @ResponseStatus(CREATED)
+    public Account createAccount(@RequestBody Account account) {
+        return accountService.save(account);
     }
 
     @PostMapping("/transfer")

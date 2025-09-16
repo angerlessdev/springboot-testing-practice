@@ -2,6 +2,7 @@ package org.angel.test.springboot.app.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.angel.test.springboot.app.Data;
+import org.angel.test.springboot.app.models.Account;
 import org.angel.test.springboot.app.models.TransferDto;
 import org.angel.test.springboot.app.services.AccountService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,12 +16,14 @@ import org.springframework.test.web.servlet.request.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AccountController.class)
@@ -117,6 +120,20 @@ class AccountControllerTest {
                 .andExpect(jsonPath("$.message").value("Transfer successful"))
                 .andExpect(jsonPath("$.transfer.accountSourceId").value(1L))
                 .andExpect(content().json(mapper.writeValueAsString(response)));
+    }
+
+    @Test
+    void testFindAllAccounts() throws Exception {
+        List<Account> accounts = Arrays.asList(Data.createAccount001().orElseThrow(), Data.createAccount002().orElseThrow());
+        when(accountService.findAll()).thenReturn(accounts);
+
+        mvc.perform(MockMvcRequestBuilders.get("/api/accounts").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].person").value("Angel"))
+                .andExpect(jsonPath("$[1].person").value("Estrella"))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(content().json(mapper.writeValueAsString(accounts)));
     }
 }
 
