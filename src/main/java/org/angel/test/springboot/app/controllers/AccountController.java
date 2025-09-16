@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -20,8 +21,14 @@ public class AccountController {
     private AccountService accountService;
     @GetMapping("/{id}")
     @ResponseStatus(OK)
-    public Account detail(@PathVariable(name="id") Long id) {
-        return accountService.findAccountById(id);
+    public ResponseEntity<Object> detail(@PathVariable(name="id") Long id) {
+        Account account = null;
+        try {
+            account = accountService.findAccountById(id);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(account);
     }
 
     @GetMapping
@@ -51,5 +58,11 @@ public class AccountController {
         response.put("transfer", transferDto);
 
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void delete(@PathVariable(name="id") Long id) {
+        accountService.deleteById(id);
     }
 }
