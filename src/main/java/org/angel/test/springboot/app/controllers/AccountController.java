@@ -1,11 +1,9 @@
 ﻿package org.angel.test.springboot.app.controllers;
 
-import org.angel.test.springboot.app.models.Account;
-import org.angel.test.springboot.app.models.TransferDto;
+import org.angel.test.springboot.app.models.*;
 import org.angel.test.springboot.app.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -14,7 +12,7 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
-@Controller
+@RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
     @Autowired
