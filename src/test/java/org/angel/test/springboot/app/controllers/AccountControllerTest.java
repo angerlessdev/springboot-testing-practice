@@ -138,6 +138,23 @@ class AccountControllerTest {
         verify(accountService).findAll();
     }
 
+    /**
+     * Test case for the POST /api/accounts endpoint.
+     *
+     * This test simulates creating a new account by sending a JSON payload.
+     * The AccountService.save method is mocked to automatically assign an ID (3L)
+     * to the account when it is "saved".
+     *
+     * Steps:
+     * 1. Prepare an Account object with no ID, name "Antonio", and balance 3000.
+     * 2. Mock the accountService.save method to set the ID to 3 when called.
+     * 3. Perform a POST request to /api/accounts with the Account JSON as body.
+     * 4. Validate the response:
+     *    - HTTP status is 201 Created
+     *    - Response content type is application/json
+     *    - JSON contains the expected ID, person, and balance
+     * 5. Verify that accountService.save was called exactly once.
+     */
     @Test
     void testSaveAccount() throws Exception {
         Account account = new Account(null, "Antonio", new BigDecimal("3000"));
