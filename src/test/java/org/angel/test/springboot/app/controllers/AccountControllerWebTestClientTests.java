@@ -183,4 +183,29 @@ class AccountControllerWebTestClientTests {
                     assertEquals(new BigDecimal("3000"), responseAccount.getBalance());
                 });
     }
+
+    @Test
+    @Order(8)
+    void testDeleteAccount() {
+        client.get().uri("/api/accounts")
+                .exchange()
+                .expectBodyList(Account.class)
+                .hasSize(4);
+
+        client.delete().uri("/api/accounts/3")
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody().isEmpty();
+
+        client.get().uri("/api/accounts")
+                .exchange()
+                .expectBodyList(Account.class)
+                .hasSize(3);
+
+        client.get().uri("/api/accounts/3")
+                .exchange()
+                //.expectStatus().is5xxServerError()
+                .expectStatus().isNotFound();
+
+    }
 }
