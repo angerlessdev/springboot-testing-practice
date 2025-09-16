@@ -120,4 +120,20 @@ class SpringbootTestApplicationTests {
 
         verify(accountRepository).findAll();
     }
+
+    @Test
+    void testSaveAccount() {
+        Account newAccount = new Account(null, "Antonio", new BigDecimal("3000"));
+        when(accountRepository.save(any(Account.class))).then(invocationOnMock -> {
+            Account a = invocationOnMock.getArgument(0);
+            a.setId(3L);
+            return a;
+        });
+
+        Account savedAccount = accountService.save(newAccount);
+        assertEquals("Antonio", savedAccount.getPerson());
+        assertEquals(3L, savedAccount.getId());
+
+        verify(accountRepository).save(any(Account.class));
+    }
 }
