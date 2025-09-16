@@ -1,4 +1,4 @@
-﻿package org.angel.test.springboot.app;
+/*package org.angel.test.springboot.app;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,3 +17,4 @@ public class SpringFoxConfig {
                 .paths(PathSelectors.ant("/api/accounts/*")).build();
     }
 }
+*/

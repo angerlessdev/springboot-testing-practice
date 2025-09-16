@@ -1,4 +1,4 @@
-﻿package org.angel.test.springboot.app.models;
+package org.angel.test.springboot.app.models;
 
 import java.math.BigDecimal;
 
