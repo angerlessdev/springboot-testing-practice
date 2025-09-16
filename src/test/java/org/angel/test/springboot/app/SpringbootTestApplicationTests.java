@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -103,5 +105,19 @@ class SpringbootTestApplicationTests {
         assertEquals("Angel", account2.getPerson());
 
         verify(accountRepository, times(2)).findById(1L);
+    }
+
+    @Test
+    void testFindAll() {
+        List<Account> data = Arrays.asList(Data.createAccount001().orElseThrow(), Data.createAccount002().orElseThrow());
+        when(accountRepository.findAll()).thenReturn(data);
+
+        List<Account> accounts = accountService.findAll();
+
+        assertFalse(accounts.isEmpty());
+        assertEquals(accounts.size(), data.size());
+        assertTrue(accounts.contains(Data.createAccount001().orElseThrow()));
+
+        verify(accountRepository).findAll();
     }
 }
